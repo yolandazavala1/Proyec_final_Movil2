@@ -22,13 +22,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
         Fragment fragment = new Fragment();
         switch (position){
             case 0:
-                fragment = new HomeFragment();
+                fragment = new NotasFragment();
                 break;
             case 1:
-                fragment = new AccountFragment();
-                break;
-            case 2:
-                fragment = new SettingsFragment();
+                fragment = new TareasFragment();
                 break;
         }
         return fragment;
@@ -36,7 +33,7 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 2;
     }
 
     public void addFragment(Fragment fragment){

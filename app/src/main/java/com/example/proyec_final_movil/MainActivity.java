@@ -29,13 +29,11 @@ public class MainActivity extends AppCompatActivity {
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
                 switch (position){
                   case 0:
-                      tab.setText("Home");
+                      tab.setText("Notas");
                       break;
                       case 1:
-                        tab.setText("Account");
+                        tab.setText("Tareas");
                         break;
-                    case 2:
-                        tab.setText("Settings");
                 }
             }
         }).attach();
