@@ -9,7 +9,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         madapter = new ViewPagerAdapter(getSupportFragmentManager(),getLifecycle());
         viewPager2.setAdapter(madapter);
         TabLayout tabLayout = findViewById(R.id.tablayout1);
+
        new TabLayoutMediator(tabLayout, viewPager2, new TabLayoutMediator.TabConfigurationStrategy() {
             @Override
             public void onConfigureTab(@NonNull TabLayout.Tab tab, int position) {
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).attach();
+
     }
 }
 

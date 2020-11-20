@@ -1,5 +1,6 @@
 package com.example.proyec_final_movil;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,14 +8,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TareasFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TareasFragment extends Fragment {
 
+public class TareasFragment extends Fragment {
+   FloatingActionButton fabtareas;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -24,7 +29,7 @@ public class TareasFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TareasFragment() {
+        public TareasFragment() {
         // Required empty public constructor
     }
 
@@ -55,10 +60,21 @@ public class TareasFragment extends Fragment {
         }
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_tareas, container, false);
+        View parent=inflater.inflate(R.layout.fragment_tareas, container, false);
+        fabtareas=parent.findViewById(R.id.Buttontareas);
+        fabtareas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getContext(),Agregar.class);
+                startActivity(intent);
+            }
+        });
+        return parent;
+
     }
+
 }
