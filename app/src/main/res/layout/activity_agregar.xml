@@ -42,31 +42,6 @@
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextTextMultiLine"
-        android:layout_width="303dp"
-        android:layout_height="302dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="29dp"
-        android:layout_marginEnd="72dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="336dp"
-        android:layout_marginTop="68dp"
-        android:clickable="true"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine"
-        app:srcCompat="@drawable/boton" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="61dp"
@@ -76,6 +51,61 @@
         android:background="@android:drawable/ic_menu_save"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/editTextTextMultiLine"
+            android:layout_width="303dp"
+            android:layout_height="302dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="278dp"
+            android:layout_marginEnd="72dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine" />
+
+        <com.github.clans.fab.FloatingActionMenu
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:menu_fab_label="Adjuntar">
+
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/fabfoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_image"
+                app:fab_label="Tomar Foto"></com.github.clans.fab.FloatingActionButton>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_video"
+                app:fab_label="Tomar Video"></com.github.clans.fab.FloatingActionButton>
+
+            <com.github.clans.fab.FloatingActionButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_mic"
+                app:fab_label="Grabar Audio"></com.github.clans.fab.FloatingActionButton>
+
+
+        </com.github.clans.fab.FloatingActionMenu>
+
+        <ImageView
+            android:id="@+id/imgfoto"
+            android:layout_width="124dp"
+            android:layout_height="136dp"
+            android:layout_below="@+id/editTextTextMultiLine"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="4dp" />
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
