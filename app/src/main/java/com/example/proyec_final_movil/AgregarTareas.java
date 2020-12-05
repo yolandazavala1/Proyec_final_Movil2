@@ -30,6 +30,7 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
    EditText txttitulo,txtdescricion;
    String titulo,descrjicion;
    CheckBox c1;
+   int chec;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,31 +45,76 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
         txttitulo=(EditText)findViewById(R.id.txttitulo);
         txtdescricion=(EditText)findViewById(R.id.txtdescripcion);
         c1=(CheckBox)findViewById(R.id.checkBox);
+        Intent intent=getIntent();
+        chec=intent.getIntExtra("pos",0);
+        checar();
         btnGuardar=(Button)findViewById(R.id.btnGuadar);
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (c1.isChecked()) {
-                    c = 1;
-                } else {
-                    c = 0;
-                }
-                titulo=txttitulo.getText().toString();
-                descrjicion=txtdescricion.getText().toString();
+               if (chec>=1){
+                   actualizar();
+               }else{
+                 guardar();
+               }
 
-                Tareas ta = new Tareas(titulo, descrjicion, h1, m1, d1, me1, a1, c);
-                DaoTareas daoTareas = new DaoTareas(getApplicationContext());
-                if (daoTareas.insert(ta) != -1) {
-                    Toast.makeText(getApplicationContext(),"Tarea registrada",Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(AgregarTareas.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(),"Campos Incorrectos",Toast.LENGTH_SHORT).show();
-                }
             }
         });
+    }
+    public void guardar(){
+        if (c1.isChecked()) {
+            c = 1;
+        } else {
+            c = 0;
+        }
+        titulo=txttitulo.getText().toString();
+        descrjicion=txtdescricion.getText().toString();
 
+        Tareas ta = new Tareas(titulo, descrjicion, h1, m1, d1, me1, a1, c);
+        DaoTareas daoTareas = new DaoTareas(getApplicationContext());
+        if (daoTareas.insert(ta) != -1) {
+            Toast.makeText(getApplicationContext(),"Tarea registrada",Toast.LENGTH_SHORT).show();
+            Intent intent=new Intent(AgregarTareas.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            Toast.makeText(getApplicationContext(),"Campos Incorrectos",Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void checar(){
+        if (chec>=1) {
+            DaoTareas daoTareas=new DaoTareas(getApplication());
+            txttitulo.setText(daoTareas.buscarid(chec).getTitulo());
+            txtdescricion.setText(daoTareas.buscarid(chec).getDescricion());
+            txtHora.setText(daoTareas.buscarid(chec).getHora()+":"+daoTareas.buscarid(chec).getMinuto());
+            txtFecha.setText(daoTareas.buscarid(chec).getDia()+"/"+daoTareas.buscarid(chec).getMes()+"/"+daoTareas.buscarid(chec).getAno());
+            if (daoTareas.buscarid(chec).getStatus()==1){
+                c1.setChecked(true);
+            }else{
+                c1.setChecked(false);
+            }
+
+
+
+        }
+    }
+
+    public void actualizar(){
+        DaoTareas daoTareas = new DaoTareas(getApplicationContext());
+        if (c1.isChecked()) {
+            c = 1;
+        } else {
+            c = 0;
+        }
+        titulo=txttitulo.getText().toString();
+        descrjicion=txtdescricion.getText().toString();
+        if (daoTareas.actualizartarea(chec,titulo,descrjicion,h1,m1,d1,me1,a1,c)){
+            Intent intent =new Intent(AgregarTareas.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            Toast.makeText(getApplicationContext(),"Campos Incorrectos",Toast.LENGTH_SHORT).show();
+        }
 
     }
 

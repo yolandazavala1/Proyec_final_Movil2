@@ -18,6 +18,7 @@ public class DaoNotas {
         bd=new BD(ctx);
         ad=bd.getWritableDatabase();
     }
+
     public long insert(Notas notas){
         ContentValues cv=new ContentValues();
         //cv.put(BD.COLUMNS_NOTAS[0],notas.getId_nota());
@@ -34,6 +35,7 @@ public class DaoNotas {
         if (c.moveToFirst()) {
             do {
                 Notas notas = new Notas();
+                notas.setId(c.getInt(c.getColumnIndex("id_nota")));
                 notas.setTitulo(c.getString(c.getColumnIndex("titulo")));
                 notas.setDescripcion(c.getString(c.getColumnIndex("descripcion")));
                 notesArrayList.add(notas);
@@ -41,18 +43,35 @@ public class DaoNotas {
         }
         return notesArrayList;
     }
-    public List<String> buscarTitulo() {
-        List<String> notesArrayList = new ArrayList<String>();
-        String selectQuery = "SELECT titulo FROM notas";
+    public Notas buscarTitulo(int id) {
+      // Cursor c=ad.query(BD.DATABASE_TABLE_NOTAS,BD.COLUMNS_NOTAS,"id_nota=?",new String[]{id+""},null,null,null);
+        Notas notas=new Notas();
+        String selectQuery = "SELECT * FROM notas WHERE id_nota = '"+id+"'";
         Log.d("", selectQuery);
         SQLiteDatabase db = this.ad;
         Cursor c = db.rawQuery(selectQuery, null);
-        if (c.moveToFirst()) {
-            do {
-                Notas notas = new Notas();
-                notesArrayList.add(c.getString(c.getColumnIndex("titulo")));
-            } while (c.moveToNext());
+        if (c.moveToFirst()){
+            Notas notas1=new Notas();
+            notas1.setTitulo(c.getString(1));
+            notas1.setDescripcion(c.getString(2));
+            notas=notas1;
         }
-        return notesArrayList;
+        return notas;
+    }
+    public Boolean actualizarnota(int id,String t,String d){
+        String selectQuery = "UPDATE notas SET titulo='"+t+"',descripcion='"+d+"' WHERE id_nota = '"+id+"'";
+        Log.d("", selectQuery);
+        SQLiteDatabase db = this.ad;
+        Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
+        return true;
+    }
+    public boolean eliminarnita(int id){
+        String selectQuery = "DELETE FROM notas WHERE id_nota = '"+id+"'";
+        Log.d("", selectQuery);
+        SQLiteDatabase db = this.ad;
+        Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
+        return true;
     }
 }

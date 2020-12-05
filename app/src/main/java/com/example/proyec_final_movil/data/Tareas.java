@@ -3,6 +3,7 @@ package com.example.proyec_final_movil.data;
 import java.io.Serializable;
 
 public class Tareas implements Serializable {
+private int id;
 private String titulo;
 private String descricion;
 private int hora;
@@ -11,6 +12,14 @@ private int dia;
 private int mes;
 private  int ano;
 private int status;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Tareas(String titulo, String descricion, int hora, int minuto, int dia, int mes, int ano, int status) {
         this.titulo = titulo;

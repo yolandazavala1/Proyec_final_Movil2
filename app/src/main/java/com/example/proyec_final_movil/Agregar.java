@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.proyec_final_movil.data.DaoNotas;
+import com.example.proyec_final_movil.data.DaoTareas;
 import com.example.proyec_final_movil.data.Notas;
 import com.github.clans.fab.FloatingActionButton;
 
@@ -27,8 +28,9 @@ public class Agregar extends AppCompatActivity {
     ImageView imageView;
     Button Guardar,mos;
     EditText Titulo,decripcion;
-    String t,d;
-    int id;
+    String t,d,st;
+    int bust;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,27 +44,26 @@ public class Agregar extends AppCompatActivity {
         Titulo=findViewById(R.id.txtTitulo1);
         decripcion=findViewById(R.id.txtDescripcion1);
         mos=findViewById(R.id.btnmostrar);
+        Intent intent= getIntent();
+        bust= intent.getIntExtra("pos",0);
+        Toast.makeText(getApplicationContext(),"Tarea registrada"+ bust,Toast.LENGTH_SHORT).show();
+        checar();
         mos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mostar();
+                //mostar();
+                checar();
             }
         });
         Guardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-             t=Titulo.getText().toString();
-             d=decripcion.getText().toString();
-                Notas n=new Notas(t,d);
-                DaoNotas dao=new DaoNotas(getApplicationContext());
-                if (dao.insert(n)!=-1){
-                    Toast.makeText(getApplicationContext(),"Tarea registrada",Toast.LENGTH_SHORT).show();
-                   Intent intent =new Intent(Agregar.this,MainActivity.class);
-                   startActivity(intent);
-                   finish();
-                }else{
-                    Toast.makeText(getApplicationContext(),"Campos Incorrectos",Toast.LENGTH_SHORT).show();
+                if (bust>=1) {
+                 actunoto();
+                }else {
+                    guardar();
                 }
+
             }
         });
         btnTomarfoto.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +95,40 @@ public class Agregar extends AppCompatActivity {
         for (int i=0;i<lis.size();i++){
             Toast.makeText(getApplicationContext(),"hay:"+lis.get(i).toString(),Toast.LENGTH_SHORT).show();
         }
+    }
+    public void checar(){
+        if (bust>=1) {
+            DaoNotas daoNotas = new DaoNotas(getApplication());
+            Titulo.setText(daoNotas.buscarTitulo(bust).getTitulo().toString());
+            decripcion.setText(daoNotas.buscarTitulo(bust).getDescripcion().toString());
+        }
+    }
+    public void guardar(){
+        t=Titulo.getText().toString();
+        d=decripcion.getText().toString();
+        Notas n=new Notas(t,d);
+        DaoNotas dao=new DaoNotas(getApplicationContext());
+        if (dao.insert(n)!=-1){
+
+            Intent intent =new Intent(Agregar.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+            Toast.makeText(getApplicationContext(),"Campos Incorrectos",Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void actunoto(){
+        DaoNotas daoNotas=new DaoNotas(getApplication());
+        t=Titulo.getText().toString();
+        d=decripcion.getText().toString();
+        if ( daoNotas.actualizarnota(bust,t,d)){
+             Intent intent =new Intent(Agregar.this,MainActivity.class);
+             startActivity(intent);
+             finish();
+        }else{
+            Toast.makeText(getApplicationContext(),"Campos Incorrectos",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }
