@@ -100,7 +100,6 @@ SearchView shvi;
             }
         });
         return parent;
-
     }
     public void actualizarRecicler(){
         DaoNotas daoNotas=new DaoNotas(getContext());

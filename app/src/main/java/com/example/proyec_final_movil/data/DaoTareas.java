@@ -20,7 +20,7 @@ public class DaoTareas {
     }
     public long insert(Tareas tareas){
         ContentValues cv=new ContentValues();
-        cv.put(BD.COLUMNS_TABLETAREAS[0],tareas.getId());
+        //cv.put(BD.COLUMNS_TABLETAREAS[0],tareas.getId());
         cv.put(BD.COLUMNS_TABLETAREAS[1],tareas.getTitulo());
         cv.put(BD.COLUMNS_TABLETAREAS[2],tareas.getDescricion());
         cv.put(BD.COLUMNS_TABLETAREAS[3],tareas.getHora());
@@ -74,7 +74,7 @@ public class DaoTareas {
             Tareas tareas1=new Tareas();
             tareas1.setTitulo(c.getString(1));
             tareas1.setDescricion(c.getString(2));
-            tareas1.setDia(c.getInt(3));
+            tareas1.setHora(c.getInt(3));
             tareas1.setMinuto(c.getInt(4));
             tareas1.setDia(c.getInt(5));
             tareas1.setMes(c.getInt(6));
@@ -92,6 +92,21 @@ public class DaoTareas {
         Cursor c = db.rawQuery(selectQuery, null);
         c.moveToFirst();
         return true;
+    }
+    public Tareas buscarutimatarea() {
+        Tareas tareas=new Tareas();
+        String selectQuery = "SELECT * FROM tareas ORDER BY id_tarea DESC";
+        Log.d("", selectQuery);
+        SQLiteDatabase db = this.ad;
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()){
+            Tareas tareas1=new Tareas();
+            tareas1.setId(c.getInt(0));
+            tareas1.setTitulo(c.getString(1));
+            tareas1.setDescricion(c.getString(2));
+            tareas=tareas1;
+        }
+        return tareas;
     }
 
 

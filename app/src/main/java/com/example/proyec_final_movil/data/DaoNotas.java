@@ -74,4 +74,20 @@ public class DaoNotas {
         c.moveToFirst();
         return true;
     }
+    public Notas buscarutimanota() {
+        Notas notas=new Notas();
+        String selectQuery = "SELECT * FROM notas ORDER BY id_nota DESC";
+        Log.d("", selectQuery);
+        SQLiteDatabase db = this.ad;
+        Cursor c = db.rawQuery(selectQuery, null);
+        if (c.moveToFirst()){
+            Notas notas1=new Notas();
+            notas1.setId(c.getInt(0));
+            notas1.setTitulo(c.getString(1));
+            notas1.setDescripcion(c.getString(2));
+            notas=notas1;
+        }
+        return notas;
+    }
+
 }

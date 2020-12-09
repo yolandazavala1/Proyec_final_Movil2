@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class BD extends SQLiteOpenHelper {
 
 
-    private static final String DATABASE_NAME = "agenda1";
+    private static final String DATABASE_NAME = "agenda3";
     private static final int DATABASE_VERSION = 1;
     Context context;
 
@@ -39,28 +39,32 @@ public class BD extends SQLiteOpenHelper {
             "mes integer not null,"+
             "ano ineteger not null,"+
             "estatus integer);";
-    private static final String TABLE_TAREAS_MEDIA =
-            "create table Tmedia ("+
+    public  static final String[]C_MEDIAT={"id_tm","id_tarea","tipo","uri"};
+    public static final String N_MEDIAT="mediat";
+    private static final String S_MEDIAT =
+            "create table mediat("+
             "id_tm integer primary key autoincrement, "+
-            "id_tarea integer not null," +
-            "dirUri varchar not null,"+
-            "descripcion varchar(100));";
+            "id_tarea integer not null," + "tipo integer not null," +
+            "uri varchar not null);";
+    public  static final String[]C_MEDIAN={"id_nm","id_nota","tipo","uri"};
+    public static final String N_MEDIAN="median";
+    private static final String S_MEDIAN=
+            "create table median("+
+            "id_nm integer primary key autoincrement,"+
+            "id_nota integer not null,"+
+            "tipo integer not null,"+
+            "uri varchar not null);";
 
-    private static final String TABLE_NOTAS_MEDIA =
-            "create table Nmedia ("+
-            "id_nm integer primary key autoincrement, "+
-            "id_nota integer not null," +
-            "dirUri varchar not null,"+
-            "descripcion varchar(100));";
 
 
 
     @Override
     public void onCreate(SQLiteDatabase db) {
       db.execSQL(SCRIPT_TABLE_TAREAS);
-      db.execSQL(TABLE_TAREAS_MEDIA);
+      db.execSQL(S_MEDIAT);
       db.execSQL(SCRIPT_TABLE_NOTAS);
-      db.execSQL(TABLE_NOTAS_MEDIA);
+      //db.execSQL(TABLE_NOTAS_MEDIA);
+      db.execSQL(S_MEDIAN);
     }
 
     @Override

@@ -98,7 +98,6 @@ public class Adaptadorlista extends RecyclerView.Adapter<Adaptadorlista.ViewHold
                             Intent intent1=new Intent(context, MainActivity.class);
                             context.startActivity(intent1);
                             Toast.makeText(v.getContext(),"Eliminado",Toast.LENGTH_SHORT).show();
-                            //listNotas.remove(getAdapterPosition());
                             }
 
 
