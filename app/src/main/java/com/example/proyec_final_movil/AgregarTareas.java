@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Data;
+import androidx.work.WorkManager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -16,7 +17,9 @@ import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.MediaRecorder;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.proyec_final_movil.Alarma.WorkManagernoti;
 import com.example.proyec_final_movil.data.AdaptadorFoto;
 import com.example.proyec_final_movil.data.AdaptadorTareas;
 import com.example.proyec_final_movil.data.AdaptadorVideo1;
@@ -73,6 +77,7 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
     private boolean permissionToRecordAccepted = false;
     private static final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     private String [] permissions = {Manifest.permission.RECORD_AUDIO};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +112,13 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
                    actualizar();
                }else{
                  guardar();
-               }
 
+               }
+               String tag = generateKey();
+               Long AlertTime = calendar.getTimeInMillis() - System.currentTimeMillis();
+               int random = (int)(Math.random()*50+1);
+               Data data = GuardarDate("¡Hey!", "Recuerda terminar tu tarea: "+txttitulo.getText(),random);
+               WorkManagernoti.GuardarNoti(AlertTime,data,tag);
             }
         });
         btnTomarfoto1.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +139,6 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
                grabar(v);
            }
        });
-
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -248,7 +257,7 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
         titulo=txttitulo.getText().toString();
         descrjicion=txtdescricion.getText().toString();
 
-        Tareas ta = new Tareas(titulo, descrjicion, h1, m1, d1, me1, a1, c);
+        Tareas ta = new Tareas(titulo, descrjicion, hora, min, dia, mes, anio, c);
         DaoTareas daoTareas = new DaoTareas(getApplicationContext());
         if (daoTareas.insert(ta) != -1) {
             Toast.makeText(getApplicationContext(),"Tarea registrada",Toast.LENGTH_SHORT).show();
@@ -359,40 +368,44 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
         }
 
     }
-    final Calendar ca=Calendar.getInstance();
+    Calendar actual=Calendar.getInstance();
+    Calendar calendar=Calendar.getInstance();
+    private int min,hora, dia, mes, anio;
     @Override
-    public void onClick(View v) {
+    public void onClick(View v) { //Este metodo reacciona al evento click del boton fecha y hora
         if (v==btnFecha){
-            final Calendar ca=Calendar.getInstance();
-            final Calendar actual =Calendar.getInstance();
-            d=actual.get(Calendar.DAY_OF_MONTH);
-            me=actual.get(Calendar.MONTH);
-            a=actual.get(Calendar.YEAR);
-            DatePickerDialog da=new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+
+            dia=actual.get(Calendar.DAY_OF_MONTH);
+            mes=actual.get(Calendar.MONTH);
+            anio=actual.get(Calendar.YEAR);
+            DatePickerDialog datePickerDialog=new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                 @Override
-                public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                    txtFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year);
-                    d1=dayOfMonth;
-                    me1=month+1;
-                    a1=year;
+                public void onDateSet(DatePicker view, int y, int m, int d) {
+                    calendar.set(calendar.DAY_OF_MONTH,d);
+                    calendar.set(calendar.MONTH,m);
+                    calendar.set(calendar.YEAR,y);
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+                    String strDate = format.format(calendar.getTime());
+
+                    txtFecha.setText(strDate);
                 }
-            },d,me,a);
-            da.show();
+            },anio,mes,dia);
+            datePickerDialog.show();
         }
         if (v==btnHora){
-           final Calendar c=Calendar.getInstance();
-           h=c.get(Calendar.HOUR_OF_DAY);
-           m=c.get(Calendar.MINUTE);
-           TimePickerDialog ti=new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-               @Override
-               public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                 txtHora.setText(hourOfDay+":"+minute);
-                 h1=hourOfDay;
-                 m1=minute;
-               }
-           },h,m,false);
-           ti.show();
+            hora=actual.get(Calendar.HOUR_OF_DAY);
+            m=actual.get(Calendar.MINUTE);
+            TimePickerDialog ti=new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+                @Override
+                public void onTimeSet(TimePicker view, int h, int m) {
+                    calendar.set(Calendar.HOUR_OF_DAY,h);
+                    calendar.set(Calendar.MINUTE,m);
+                    txtHora.setText(String.format("%02d:%02d",h,m));
+                }
+            },hora,min,false);
+            ti.show();
         }
+
     }
     String  currentPhotoPath,videopath,audiopath;
     private File createImageFile() throws IOException {
@@ -460,5 +473,18 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
         NotificationManagerCompat no=NotificationManagerCompat.from(getApplicationContext());
         no.notify(NOTIFICATION_ID,builder.build());
 
+    }
+    private void Eliminarnoti(String tag){
+        WorkManager.getInstance(this).cancelAllWorkByTag(tag);
+        Toast.makeText(AgregarTareas.this, "Alarma eliminada", Toast.LENGTH_SHORT).show();
+    }
+    private String generateKey(){
+        return UUID.randomUUID().toString();
+    }
+    private Data GuardarDate(String titulo, String detalle, int id_noti){
+        return new Data.Builder()
+                .putString("titulo",titulo)
+                .putString("detalle",detalle)
+                .putInt("id_noti",id_noti).build();
     }
 }
