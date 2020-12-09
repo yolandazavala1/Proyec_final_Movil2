@@ -2,16 +2,23 @@ package com.example.proyec_final_movil;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,8 +54,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
+import java.util.UUID;
 
 public class AgregarTareas extends AppCompatActivity implements View.OnClickListener {
+    private final static String CHANEL_ID ="NOTIFICACION";
+    private static final int NOTIFICATION_ID = 0;
     FloatingActionButton btnTomarfoto1,btntomarvideo1,btnGrabaraudio1,menu;
    TextView txtHora,txtFecha;
    Button btnHora,btnFecha,btnGuardar;
@@ -349,14 +359,16 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
         }
 
     }
+    final Calendar ca=Calendar.getInstance();
     @Override
     public void onClick(View v) {
         if (v==btnFecha){
-            final Calendar c=Calendar.getInstance();
-            d=c.get(Calendar.DAY_OF_MONTH);
-            me=c.get(Calendar.MONTH);
-            a=c.get(Calendar.YEAR);
-            DatePickerDialog da=new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+            final Calendar ca=Calendar.getInstance();
+            final Calendar actual =Calendar.getInstance();
+            d=actual.get(Calendar.DAY_OF_MONTH);
+            me=actual.get(Calendar.MONTH);
+            a=actual.get(Calendar.YEAR);
+            DatePickerDialog da=new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                     txtFecha.setText(dayOfMonth+"/"+(month+1)+"/"+year);
@@ -424,5 +436,29 @@ public class AgregarTareas extends AppCompatActivity implements View.OnClickList
         // Save a file: path for use with ACTION_VIEW intents
         audiopath = aud.getAbsolutePath();
         return audiopath;
+    }
+    public void guar(){
+      String tag=generate();
+    }
+    private String generate(){
+        return UUID.randomUUID().toString();
+    }
+    @SuppressLint("RestrictedApi")
+    private Data Guardardta(String ti, String des, int id_noti){
+     return new Data.Builder()
+             .put("titulo",ti).put("descrpcion",des).put("id_noti",id_noti).build();
+    }
+    public void createnotificacio(){
+        NotificationCompat.Builder builder=new NotificationCompat.Builder(getApplicationContext(),CHANEL_ID);
+        builder.setSmallIcon(R.drawable.ic_round_event_note_24);
+        builder.setContentTitle("Notificacion");
+        builder.setContentText("Recordatorio Tarea");
+        builder.setColor(Color.BLUE);
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setVibrate(new long[]{1000,1000,1000});
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+        NotificationManagerCompat no=NotificationManagerCompat.from(getApplicationContext());
+        no.notify(NOTIFICATION_ID,builder.build());
+
     }
 }

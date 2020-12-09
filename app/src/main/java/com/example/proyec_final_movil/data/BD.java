@@ -54,7 +54,15 @@ public class BD extends SQLiteOpenHelper {
             "id_nota integer not null,"+
             "tipo integer not null,"+
             "uri varchar not null);";
-
+    public static final String[]COLUMNS_ALERTAS = {"_id","id_Tarea","titulo","descripcion","fechaAlerta","horaAlerta"};
+    public static final String TABLE_ALERTAS_NAME="alertas";
+    private  final String TABLE_ALERTAS = "create table alertas ("+
+           "_id integer primary key autoincrement, "+
+           "id_tarea integer not null," +
+            "titulo varchar(100) not null,"+
+            "descripcion text not null,"+
+            "fechaAlerta varchar(12),"+
+            "horaAlerta varchar(12));";
 
 
 
@@ -65,6 +73,7 @@ public class BD extends SQLiteOpenHelper {
       db.execSQL(SCRIPT_TABLE_NOTAS);
       //db.execSQL(TABLE_NOTAS_MEDIA);
       db.execSQL(S_MEDIAN);
+      db.execSQL(TABLE_ALERTAS);
     }
 
     @Override
